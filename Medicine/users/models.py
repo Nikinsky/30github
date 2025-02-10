@@ -1,23 +1,27 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from multiselectfield import MultiSelectField
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class SpecialDoctor(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return f'{self.name}'
 
 class UserProfile(AbstractUser):
     pass
 
 
 
+
+
 class Doctor(UserProfile):
     fio = models.CharField(max_length=200)
-    bio = models.TextField(null=True, blank=True)
     special = models.ForeignKey(SpecialDoctor, related_name='special_doctor', on_delete=models.CASCADE)
-    experience = models.CharField(max_length=10)
+    about_me = models.TextField(null=True, blank=True)
+    experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)])
     amount_of_consultation = models.CharField(max_length=100)
 
     EDU_CHOICES = {
@@ -25,7 +29,7 @@ class Doctor(UserProfile):
         ('Кандидат мединциских наук', 'Кандидат мединциских наук'),
         ('Доктор мединциских наук', 'Доктор мединциских наук')
     }
-    status_edu = models.CharField(max_length=255, choices=EDU_CHOICES, )
+    status_edu = models.CharField(max_length=255, choices=EDU_CHOICES)
 
     CAT_CHOICES = {
         ('Для взрослого', 'Для взрослого'),
@@ -76,3 +80,6 @@ class Experience(models.Model):
 
     def __str__(self):
         return f'{self.specialist_experience} - {self.start_exper} - {self.end_exper}'
+
+
+
