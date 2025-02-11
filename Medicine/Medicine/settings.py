@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'medicine_app',
     'rest_framework',
     'multiselectfield',
+    "phonenumber_field",
 
 ]
 

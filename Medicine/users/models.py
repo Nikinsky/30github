@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from multiselectfield import MultiSelectField
 from django.core.validators import MinValueValidator, MaxValueValidator
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class SpecialDoctor(models.Model):
@@ -10,10 +11,21 @@ class SpecialDoctor(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
 class UserProfile(AbstractUser):
     pass
 
 
+class Patient(UserProfile):
+    fio = models.CharField(max_length=50)
+    age = models.PositiveSmallIntegerField(default=1)
+    phone_number = PhoneNumberField(null=True, blank=True, region="KG")
+    BLOOD_TYPE = (
+        ('1', 'A'),
+        ('2', 'B'),
+        ('3', 'C'),
+        ('4', 'AB'),
+    )
 
 
 
@@ -82,4 +94,34 @@ class Experience(models.Model):
         return f'{self.specialist_experience} - {self.start_exper} - {self.end_exper}'
 
 
+
+class Rating(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    specialist = models.ForeignKey(Doctor, related_name='ratings', on_delete=models.CASCADE)
+    stars = models.IntegerField(choices=[(i, str(i)) for i in range(1,6)], verbose_name='Рейтинг')
+
+    def __str__(self):
+        return f'{self.user} - {self.stars}'
+
+
+class Feedback(models.Model): #Отзыв про специалистов
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE,)
+    specialist = models.ForeignKey(Doctor, related_name='reviews', on_delete=models.CASCADE)
+    # parent = models.ForeignKey('self', related_name='relies', null=True, blank=True, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_data = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return f'{self.user} - {self.specialist}'
+
+
+class ConsultZapis(models.Model):
+    username = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    specialist = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    start_con = models.DateTimeField()
+    end_con = models.DateTimeField()
+
+    def __str__(self):
+        return f'{self.username} - {self.specialist}'
 
