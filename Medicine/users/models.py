@@ -12,6 +12,7 @@ class SpecialDoctor(models.Model):
         return f'{self.name}'
 
 
+
 class UserProfile(AbstractUser):
     pass
 
@@ -27,6 +28,8 @@ class Patient(UserProfile):
         ('4', 'AB'),
     )
 
+    class Meta:
+        verbose_name_plural = "Patient"
 
 
 class Doctor(UserProfile):
@@ -35,7 +38,6 @@ class Doctor(UserProfile):
     about_me = models.TextField(null=True, blank=True)
     experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)])
     amount_of_consultation = models.CharField(max_length=100)
-
     EDU_CHOICES = {
         ('Высшее образование', 'Высшее образование'),
         ('Кандидат мединциских наук', 'Кандидат мединциских наук'),
@@ -61,13 +63,18 @@ class Doctor(UserProfile):
     ]
     days_of_week = MultiSelectField(choices=DAYS_OF_WEEK, max_choices=5, max_length=100)  # Allow selecting 3 days
 
+
+    class Meta:
+        verbose_name_plural = "Doctor"
+
+
     def __str__(self):
         return f'{self.fio} - {self.special}'
 
     def get_average_rating(self):
-        ratings = self.ratings.all()
-        if ratings.exists():
-            return round(sum(rating.stars for rating in ratings) / ratings.count(), 1)
+        rating = self.ratings.all()
+        if rating.exists():
+            return round(sum(rating.stars for rating in rating) / rating.count(), 1)
         return 0
 
 
@@ -96,7 +103,7 @@ class Experience(models.Model):
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(Patient, related_name='rating_user', on_delete=models.CASCADE)
     specialist = models.ForeignKey(Doctor, related_name='ratings', on_delete=models.CASCADE)
     stars = models.IntegerField(choices=[(i, str(i)) for i in range(1,6)], verbose_name='Рейтинг')
 
@@ -105,7 +112,7 @@ class Rating(models.Model):
 
 
 class Feedback(models.Model): #Отзыв про специалистов
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE,)
+    user = models.ForeignKey(Patient, related_name='feedbacks_user', on_delete=models.CASCADE,)
     specialist = models.ForeignKey(Doctor, related_name='reviews', on_delete=models.CASCADE)
     # parent = models.ForeignKey('self', related_name='relies', null=True, blank=True, on_delete=models.CASCADE)
     text = models.TextField()
@@ -116,12 +123,4 @@ class Feedback(models.Model): #Отзыв про специалистов
         return f'{self.user} - {self.specialist}'
 
 
-class ConsultZapis(models.Model):
-    username = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    specialist = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    start_con = models.DateTimeField()
-    end_con = models.DateTimeField()
-
-    def __str__(self):
-        return f'{self.username} - {self.specialist}'
 
