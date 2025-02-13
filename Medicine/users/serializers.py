@@ -10,6 +10,8 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
 
 
 class DoctorListSerializer(serializers.ModelSerializer):
+    average_rating = serializers.SerializerMethodField()
+
     class Meta:
         model = Doctor
         fields = ['id', 'fio', 'special', 'experience',]

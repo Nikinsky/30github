@@ -11,11 +11,8 @@ class SpecialDoctor(models.Model):
     def __str__(self):
         return f'{self.name}'
 
-class CategoryConsultation(models.Model):
-    name = models.CharField(max_length=100
 
 
-                            )
 class UserProfile(AbstractUser):
     pass
 
@@ -41,7 +38,6 @@ class Doctor(UserProfile):
     about_me = models.TextField(null=True, blank=True)
     experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)])
     amount_of_consultation = models.CharField(max_length=100)
-    category_consultation = models.ForeignKey(CategoryConsultation, related_name='doctor_category', on_delete=models.CASCADE)
     EDU_CHOICES = {
         ('Высшее образование', 'Высшее образование'),
         ('Кандидат мединциских наук', 'Кандидат мединциских наук'),
@@ -49,12 +45,12 @@ class Doctor(UserProfile):
     }
     status_edu = models.CharField(max_length=255, choices=EDU_CHOICES)
 
-    # CAT_CHOICES = {
-    #     ('Для взрослого', 'Для взрослого'),
-    #     ('Для ребёнка', 'Для ребёнка'),
-    #     ('Для взрослого и ребёнка', 'Для взрослого и ребёнка'),
-    # }
-    # status_cat = models.CharField(max_length=255, choices=CAT_CHOICES)
+    CAT_CHOICES = {
+        ('Для взрослого', 'Для взрослого'),
+        ('Для ребёнка', 'Для ребёнка'),
+        ('Для взрослого и ребёнка', 'Для взрослого и ребёнка'),
+    }
+    status_cat = models.CharField(max_length=255, choices=CAT_CHOICES)
 
     DAYS_OF_WEEK = [
         ('Mon', 'Monday'),
@@ -75,11 +71,11 @@ class Doctor(UserProfile):
     def __str__(self):
         return f'{self.fio} - {self.special}'
 
-    # def get_average_rating(self):
-    #     ratings = self.ratings.all()
-    #     if ratings.exists():
-    #         return round(sum(rating.stars for rating in ratings) / ratings.count(), 1)
-    #     return 0
+    def get_average_rating(self):
+        rating = self.ratings.all()
+        if rating.exists():
+            return round(sum(rating.stars for rating in rating) / rating.count(), 1)
+        return 0
 
 
 

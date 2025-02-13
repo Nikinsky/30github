@@ -4,7 +4,7 @@ from users.models import *
 class MainPage(models.Model):
     title_blue = models.CharField(max_length=300)
     title_white = models.CharField(max_length=100)
-    older_tupe = models.BooleanField(default=False)
+    older_type = models.BooleanField(default=False)
     older_text = models.CharField(max_length=100)
 
 
