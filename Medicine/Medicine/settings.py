@@ -46,6 +46,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'multiselectfield',
     "phonenumber_field",
+    'rest_framework_swagger',
+    'drf_yasg',
+    'drf_spectacular',
+
 
 ]
 
