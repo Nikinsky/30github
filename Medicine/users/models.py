@@ -21,6 +21,7 @@ class Patient(UserProfile):
     fio = models.CharField(max_length=50)
     age = models.PositiveSmallIntegerField(default=1)
     phone_number = PhoneNumberField(null=True, blank=True, region="KG")
+    image = models.ImageField(upload_to='patient_img', null=True, blank=True)
     BLOOD_TYPE = (
         ('1', 'A'),
         ('2', 'B'),
@@ -34,6 +35,7 @@ class Patient(UserProfile):
 
 class Doctor(UserProfile):
     fio = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='doctor_img', null=True, blank=True)
     special = models.ForeignKey(SpecialDoctor, related_name='special_doctor', on_delete=models.CASCADE)
     about_me = models.TextField(null=True, blank=True)
     experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)])
@@ -74,7 +76,7 @@ class Doctor(UserProfile):
     def get_average_rating(self):
         rating = self.ratings.all()
         if rating.exists():
-            return round(sum(rating.stars for rating in rating) / rating.count(), 1)
+            return (round(sum(rating.stars for rating in rating) / rating.count(), 1))
         return 0
 
 
@@ -102,21 +104,15 @@ class Experience(models.Model):
 
 
 
-class Rating(models.Model):
-    user = models.ForeignKey(Patient, related_name='rating_user', on_delete=models.CASCADE)
-    specialist = models.ForeignKey(Doctor, related_name='ratings', on_delete=models.CASCADE)
-    stars = models.IntegerField(choices=[(i, str(i)) for i in range(1,6)], verbose_name='Рейтинг')
-
-    def __str__(self):
-        return f'{self.user} - {self.stars}'
 
 
 class Feedback(models.Model): #Отзыв про специалистов
     user = models.ForeignKey(Patient, related_name='feedbacks_user', on_delete=models.CASCADE,)
-    specialist = models.ForeignKey(Doctor, related_name='reviews', on_delete=models.CASCADE)
+    specialist = models.ForeignKey(Doctor, related_name='ratings', on_delete=models.CASCADE)
+    stars = models.IntegerField(choices=[(i, str(i)) for i in range(1,6)], verbose_name='Рейтинг')
     # parent = models.ForeignKey('self', related_name='relies', null=True, blank=True, on_delete=models.CASCADE)
     text = models.TextField()
-    created_data = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True)
 
 
     def __str__(self):

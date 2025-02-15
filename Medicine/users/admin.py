@@ -19,5 +19,4 @@ class DocktorAdmin(admin.ModelAdmin):
 admin.site.register(Doctor, DocktorAdmin)
 admin.site.register(Patient)
 admin.site.register(Feedback)
-admin.site.register(Rating)
 

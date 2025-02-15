@@ -1,6 +1,9 @@
 from rest_framework import viewsets, generics
 from .serializers import *
 
+
+
+
 class DoctorUserProfileListView(generics.ListAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorProfileSerializer
@@ -18,4 +21,15 @@ class DoctorListView(generics.ListAPIView):
 class DoctorDetailListView(generics.RetrieveAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorProfileSerializer
+
+
+
+class FeedbackCreateViewAPI(generics.CreateAPIView):
+    queryset = Feedback.objects.all()
+    serializer_class = FeedbackCreateSerializer
+
+
+class FeedbackListViewAPI(generics.ListAPIView):
+    queryset = Feedback.objects.all()
+    serializer_class = FeedbackListSerializer
 
