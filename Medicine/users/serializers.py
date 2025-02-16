@@ -8,6 +8,7 @@ class PatientSerializer(serializers.ModelSerializer):
         model = Patient
         fields = ['id', 'fio', 'image',]
 
+
 class EducationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Education
@@ -19,17 +20,20 @@ class ExperienceSerializer(serializers.ModelSerializer):
         model = Experience
         fields = ['id', 'start_exper', 'end_exper', 'description_exper']
 
+
 class FeedbackListSerializer(serializers.ModelSerializer):
     user = PatientSerializer
     class Meta:
         model = Feedback
         fields = ['id', 'user', 'stars', 'text', 'created_date']
 
+
 class FeedbackDoctorSerializer(serializers.ModelSerializer):
     user = PatientSerializer()
     class Meta:
         model = Feedback
         fields = ['id', 'user', 'stars', 'text', 'created_date']
+
 
 class DoctorProfileSerializer(serializers.ModelSerializer):
     educations = EducationSerializer(many=True)
@@ -52,11 +56,11 @@ class DoctorDetailSerializer(serializers.ModelSerializer):
     educations = EducationSerializer(many=True, read_only=True)
     experiences = ExperienceSerializer(many=True, read_only=True)
     average_rating = serializers.SerializerMethodField()
-    ratings = FeedbackDoctorSerializer(many=True, read_only=True)
+    # ratings = FeedbackDoctorSerializer(many=True, read_only=True)
 
     class Meta:
         model = Doctor
-        fields = ['id', 'fio', 'special', 'educations', 'ratings','average_rating', 'experiences', 'about_me','experience'] #rating and count consultation need add
+        fields = ['id', 'fio', 'special', 'educations','average_rating', 'experiences', 'about_me','experience'] #rating and count consultation need add
 
 
     def get_average_rating(self, obj):
@@ -68,5 +72,11 @@ class FeedbackCreateSerializer(serializers.ModelSerializer):
         model = Feedback
         fields = ['id', 'user', 'specialist', 'stars', 'text','created_date']
 
+
+class FeedbackListCreateSerializer(serializers.ModelSerializer):
+    user = PatientSerializer(read_only=True)
+    class Meta:
+        model = Feedback
+        fields = ['id', 'user', 'specialist', 'stars', 'text', 'created_date']
 
 

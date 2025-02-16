@@ -11,13 +11,13 @@ class MPIconsSerializer(serializers.ModelSerializer):
 
 class MPQuestionsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MainPageIcons
+        model = QuestionsMP
         fields = ['id', 'question', 'answer']
 
 
 class MedlinkPersonalSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MainPageIcons
+        model = MedlinkPersonal
         fields = ['id', 'title']
 
 

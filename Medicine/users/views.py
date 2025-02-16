@@ -20,16 +20,16 @@ class DoctorListView(generics.ListAPIView):
 
 class DoctorDetailListView(generics.RetrieveAPIView):
     queryset = Doctor.objects.all()
-    serializer_class = DoctorProfileSerializer
+    serializer_class = DoctorDetailSerializer
 
 
 
 class FeedbackCreateViewAPI(generics.CreateAPIView):
-    queryset = Feedback.objects.all()
+    # queryset = Feedback.objects.all()  # queryset не нужен для create потому-что данные из базы не нужны.
     serializer_class = FeedbackCreateSerializer
 
 
 class FeedbackListViewAPI(generics.ListAPIView):
     queryset = Feedback.objects.all()
-    serializer_class = FeedbackListSerializer
+    serializer_class = FeedbackListCreateSerializer
 
