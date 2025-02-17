@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework import generics, viewsets
+from .serializers import *
 
-# Create your views here.
+
+class MainPageListView(generics.ListAPIView):
+    queryset = MainPage.objects.all()
+    serializer_class = MainPageSerializer
+
