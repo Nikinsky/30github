@@ -113,3 +113,29 @@ class FeedbackListCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'specialist', 'stars', 'text', 'created_date']
 
 
+
+    educations = EducationSerializer(many=True, read_only=True)
+    experiences = ExperienceSerializer(many=True, read_only=True)
+    average_rating = serializers.SerializerMethodField()
+    # ratings = FeedbackDoctorSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Doctor
+        fields = ['id', 'fio', 'special', 'educations','average_rating', 'experiences', 'about_me','experience'] #rating and count consultation need add
+
+
+    def get_average_rating(self, obj):
+        return obj.get_average_rating()
+
+
+class FeedbackCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = ['id', 'user', 'specialist', 'stars', 'text','created_date']
+
+
+class FeedbackListCreateSerializer(serializers.ModelSerializer):
+    user = PatientSerializer(read_only=True)
+    class Meta:
+        model = Feedback
+        fields = ['id', 'user', 'specialist', 'stars', 'text', 'created_date']
