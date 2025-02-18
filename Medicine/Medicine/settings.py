@@ -44,12 +44,14 @@ INSTALLED_APPS = [
     'users',
     'medicine_app',
     'rest_framework',
+    'rest_framework_simplejwt',
     'multiselectfield',
     "phonenumber_field",
     'rest_framework_swagger',
     'drf_yasg',
     'drf_spectacular',
     "corsheaders",
+
 ]
 
 MIDDLEWARE = [
@@ -145,6 +147,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+
+
 }
 
 SPECTACULAR_SETTINGS = {
@@ -155,6 +163,16 @@ SPECTACULAR_SETTINGS = {
 }
 
 
+from datetime import timedelta
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10000),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": False,
+}
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
