@@ -20,7 +20,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class RegisterPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['id', 'username', 'password', 'phone_number']
+        fields = ['id', 'username', 'email', 'password', 'phone_number']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -28,9 +28,8 @@ class RegisterPatientSerializer(serializers.ModelSerializer):
         return user
 
 
-
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=100)
+    email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
 
 

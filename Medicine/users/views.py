@@ -50,8 +50,8 @@ class LoginView(generics.GenericAPIView):
             )
 
         try:
-            user = Patient.objects.get(email=username)
-        except Patient.DoesNotExist:
+            user = UserProfile.objects.get(email=username)
+        except UserProfile.DoesNotExist:
             return Response(
                 {"error": "Invalid email or password."},
                 status=status.HTTP_401_UNAUTHORIZED,
@@ -105,6 +105,8 @@ class LogoutView(generics.GenericAPIView):
             refresh_token = serializer.validated_data['refresh']
             token = RefreshToken(refresh_token)
             token.blacklist()
+
+
 
             return Response(
                 {"message": "Logout successful."},
