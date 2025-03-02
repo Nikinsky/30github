@@ -64,7 +64,8 @@ class Doctor(UserProfile):
         ('San', 'Sunday'),
     ]
     days_of_week = MultiSelectField(choices=DAYS_OF_WEEK, max_choices=5, max_length=100)  # Allow selecting 3 days
-
+    price_consultation = models.PositiveSmallIntegerField(default=1000, null=True, blank=True)
+    dlitelnost = models.CharField(max_length=100, default='60 мин.', help_text="Длительность")
 
     class Meta:
         verbose_name_plural = "Doctor"
@@ -78,6 +79,13 @@ class Doctor(UserProfile):
         if rating.exists():
             return (round(sum(rating.stars for rating in rating) / rating.count(), 1))
         return 0
+
+
+
+class WorkTime(models.Model):
+    start_work = models.TimeField()
+    end_work = models.TimeField()
+    doctor = models.ForeignKey(Doctor, related_name='works_time', on_delete=models.CASCADE)
 
 
 

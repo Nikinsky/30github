@@ -1,6 +1,9 @@
 from django.db import models
 from users.models import *
 
+
+
+
 class MainPage(models.Model):
     title_blue = models.CharField(max_length=300)
     title_white = models.CharField(max_length=100)
@@ -45,11 +48,30 @@ class MedlinkPersonal(models.Model):
 
 
 
-class ConsultZapis(models.Model):
-    username = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    specialist = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    start_con = models.DateTimeField()
-    end_con = models.DateTimeField()
+# Модель слота для записи к врачу
+class ConsultationSlot(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='slots')
+    date = models.DateField()  # Дата консультации
+    time = models.TimeField()  # Время консультации
+    is_booked = models.BooleanField(default=False)  # Занят ли слот
+
+    class Meta:
+        unique_together = ('doctor', 'date', 'time')  # Запрещает дублирование слотов
+        verbose_name = 'Consultation Slot'
+        verbose_name_plural = 'Consultation Slots'
 
     def __str__(self):
-        return f'{self.username} - {self.specialist}'
+        return f"{self.doctor} - {self.date} {self.time} {'(Занято)' if self.is_booked else '(Свободно)'}"
+
+# Модель бронирования слота пациентом
+class Booking(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='bookings')
+    slot = models.ForeignKey(ConsultationSlot, on_delete=models.CASCADE, related_name='bookings')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Booking'
+        verbose_name_plural = 'Bookings'
+
+    def __str__(self):
+        return f"Бронирование {self.patient} на {self.slot}"

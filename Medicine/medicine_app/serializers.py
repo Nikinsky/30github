@@ -36,6 +36,29 @@ class MainPageSerializer(serializers.ModelSerializer):
                   ]
 
 
+# Сериализатор для слотов консультаций
+class ConsultationSlotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConsultationSlot
+        fields = ['id', 'doctor', 'date', 'time', 'is_booked']
+
+# Сериализатор для бронирования слотов
+class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ['id', 'patient', 'slot']
+
+    def validate(self, data):
+        slot = data.get('slot')
+        if slot.is_booked:
+            raise serializers.ValidationError("Слот уже забронирован.")
+        return data
+
+    def create(self, validated_data):
+        slot = validated_data['slot']
+        slot.is_booked = True
+        slot.save()
+        return super().create(validated_data)
 
 
 

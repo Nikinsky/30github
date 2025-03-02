@@ -6,8 +6,9 @@ from django.contrib.auth.models import update_last_login
 from rest_framework.permissions import AllowAny
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate
-
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .filters import *
 class RegisterView(generics.GenericAPIView):
     """Регистрация нового пользователя с выдачей токенов"""
     serializer_class = RegisterPatientSerializer
@@ -122,13 +123,27 @@ class DoctorUserProfileListView(generics.ListAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorProfileSerializer
 
+    # def get_queryset(self):
+    #     return Doctor.objects.filter(id==self.request.user.id)
+
+class DoctorProfileUpdateListView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorProfileSerializer
+
     def get_queryset(self):
         return Doctor.objects.filter(id==self.request.user.id)
 
 
+
 class DoctorListView(generics.ListAPIView):
     queryset = Doctor.objects.all()
-    serializer_class = DoctorProfileSerializer
+    serializer_class = DoctorListSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    search_fields = ['fio']
+    ordering_fields = ['price_consultation']
+    filterset_class = DoctorFilter
+
+
 
 
 
