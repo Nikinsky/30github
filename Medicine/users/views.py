@@ -9,6 +9,12 @@ from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .filters import *
+from rest_framework.response import Response
+from .services import generate_consultation_slots
+from .serializers import GenerateSlotsSerializer
+
+
+
 class RegisterView(generics.GenericAPIView):
     """Регистрация нового пользователя с выдачей токенов"""
     serializer_class = RegisterPatientSerializer
@@ -153,6 +159,37 @@ class DoctorDetailListView(generics.RetrieveAPIView):
 
 
 
+
+
+
+# Список всех слотов (свободных и занятых)
+class ConsultationSlotListView(generics.ListAPIView):
+    queryset = ConsultationSlot.objects.all()
+    serializer_class = ConsultationSlotSerializer
+
+# Список только доступных слотов для конкретного врача
+class AvailableConsultationSlotListView(generics.ListAPIView):
+    serializer_class = ConsultationSlotSerializer
+
+    def get_queryset(self):
+        doctor_id = self.request.query_params.get('doctor')
+        if doctor_id:
+            return ConsultationSlot.objects.filter(doctor_id=doctor_id, is_booked=False)
+        return ConsultationSlot.objects.filter(is_booked=False)
+
+# Создание нового бронирования
+class BookingCreateView(generics.CreateAPIView):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+
+# Список всех бронирований
+class BookingListView(generics.ListAPIView):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+
+
+
+
 class FeedbackCreateViewAPI(generics.CreateAPIView):
     # queryset = Feedback.objects.all()  # queryset не нужен для create потому-что данные из базы не нужны.
     serializer_class = FeedbackCreateSerializer
@@ -161,4 +198,23 @@ class FeedbackCreateViewAPI(generics.CreateAPIView):
 class FeedbackListViewAPI(generics.ListAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackListCreateSerializer
+
+
+class GenerateSlotsView(generics.GenericAPIView):
+    serializer_class = GenerateSlotsSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            doctor = serializer.validated_data['doctor_id']
+            days_ahead = serializer.validated_data['days_ahead']
+            slot_duration = serializer.validated_data['slot_duration']
+
+            # Генерация слотов
+            generate_consultation_slots(doctor, days_ahead, slot_duration)
+
+            return Response({'message': 'Слоты успешно созданы!'}, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 

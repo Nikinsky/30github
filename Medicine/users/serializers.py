@@ -55,13 +55,13 @@ class ExperienceSerializer(serializers.ModelSerializer):
 
 
 
-class WorkTimeSerializer(serializers.ModelSerializer):
-    start_work = serializers.TimeField(format('%H:%M'))
-    end_work = serializers.TimeField(format('%H:%M'))
-
-    class Meta:
-        model = WorkTime
-        fields = ['start_work', 'end_work']
+# class WorkTimeSerializer(serializers.ModelSerializer):
+#     start_work = serializers.TimeField(format('%H:%M'))
+#     end_work = serializers.TimeField(format('%H:%M'))
+#
+#     class Meta:
+#         model = WorkTime
+#         fields = ['start_work', 'end_work']
 
 
 
@@ -100,20 +100,20 @@ class FeedbackListCreateSerializer(serializers.ModelSerializer):
 class DoctorProfileSerializer(serializers.ModelSerializer):
     educations = EducationSerializer(many=True)
     experiences = ExperienceSerializer(many=True)
-    works_time = WorkTimeSerializer(many=True, read_only=True)
+    # works_time = WorkTimeSerializer(many=True, read_only=True)
     class Meta:
         model  = Doctor
-        fields = ['id', 'fio', 'special',  'about_me', 'experience', 'amount_of_consultation', 'status_edu', 'days_of_week', 'works_time', 'price_consultation', 'dlitelnost', 'educations', 'experiences',]
+        fields = ['id', 'fio', 'special',  'about_me', 'experience', 'work_start_time', 'work_end_time', 'amount_of_consultation', 'status_edu', 'days_of_week', 'works_time', 'price_consultation', 'dlitelnost', 'educations', 'experiences',]
 
 
 
 class DoctorListSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()
-    works_time = WorkTimeSerializer(many=True)
+    # works_time = WorkTimeSerializer(many=True)
 
     class Meta:
         model = Doctor
-        fields = ['id', 'fio', 'special', 'experience', 'average_rating', 'price_consultation', 'image', 'works_time']
+        fields = ['id', 'fio', 'special', 'experience', 'work_start_time', 'work_end_time', 'average_rating', 'price_consultation', 'image', 'works_time']
 
     def get_average_rating(self, obj):
         return obj.get_average_rating()
@@ -137,3 +137,41 @@ class DoctorDetailSerializer(serializers.ModelSerializer):
 
     def get_average_rating(self, obj):
         return obj.get_average_rating()
+
+
+
+
+# Сериализатор для слотов консультаций
+class ConsultationSlotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConsultationSlot
+        fields = ['id', 'doctor', 'date', 'time', 'is_booked']
+
+# Сериализатор для бронирования слотов
+class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = ['id', 'patient', 'slot']
+
+    def validate(self, data):
+        slot = data.get('slot')
+        if slot.is_booked:
+            raise serializers.ValidationError("Слот уже забронирован.")
+        return data
+
+    def create(self, validated_data):
+        slot = validated_data['slot']
+        slot.is_booked = True
+        slot.save()
+        return super().create(validated_data)
+
+
+
+
+
+class GenerateSlotsSerializer(serializers.Serializer):
+    doctor_id = serializers.PrimaryKeyRelatedField(queryset=Doctor.objects.all())
+    days_ahead = serializers.IntegerField(default=14, min_value=1)
+    slot_duration = serializers.IntegerField(default=30, min_value=10)
+
+

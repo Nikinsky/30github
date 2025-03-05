@@ -22,12 +22,7 @@ class Patient(UserProfile):
     age = models.PositiveSmallIntegerField(default=1)
     phone_number = PhoneNumberField(null=True, blank=True, region="KG")
     image = models.ImageField(upload_to='patient_img', null=True, blank=True)
-    BLOOD_TYPE = (
-        ('1', 'A'),
-        ('2', 'B'),
-        ('3', 'C'),
-        ('4', 'AB'),
-    )
+
 
     class Meta:
         verbose_name_plural = "Patient"
@@ -40,6 +35,8 @@ class Doctor(UserProfile):
     about_me = models.TextField(null=True, blank=True)
     experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)])
     amount_of_consultation = models.CharField(max_length=100)
+    work_start_time = models.TimeField(default='09:00')  # Начало рабочего дня
+    work_end_time = models.TimeField(default='17:00')    # Конец рабочего дня
     EDU_CHOICES = {
         ('Высшее образование', 'Высшее образование'),
         ('Кандидат мединциских наук', 'Кандидат мединциских наук'),
@@ -55,15 +52,15 @@ class Doctor(UserProfile):
     status_cat = models.CharField(max_length=255, choices=CAT_CHOICES)
 
     DAYS_OF_WEEK = [
-        ('Mon', 'Monday'),
-        ('Tue', 'Tuesday'),
-        ('Wed', 'Wednesday'),
-        ('Thu', 'Thursday'),
-        ('Fri', 'Friday'),
-        ('Sat', 'Saturday'),
-        ('San', 'Sunday'),
+        ('Mon', 'Понедельник'),
+        ('Tue', 'Вторник'),
+        ('Wed', 'Среда'),
+        ('Thu', 'Четверг'),
+        ('Fri', 'Пятница'),
+        ('Sat', 'Суббота'),
+        ('Sun', 'Воскресенье'),
     ]
-    days_of_week = MultiSelectField(choices=DAYS_OF_WEEK, max_choices=5, max_length=100)  # Allow selecting 3 days
+    days_of_week = MultiSelectField(choices=DAYS_OF_WEEK, max_choices=7, max_length=100)  # Allow selecting 3 days
     price_consultation = models.PositiveSmallIntegerField(default=1000, null=True, blank=True)
     dlitelnost = models.CharField(max_length=100, default='60 мин.', help_text="Длительность")
 
@@ -81,12 +78,12 @@ class Doctor(UserProfile):
         return 0
 
 
-
-class WorkTime(models.Model):
-    start_work = models.TimeField()
-    end_work = models.TimeField()
-    doctor = models.ForeignKey(Doctor, related_name='works_time', on_delete=models.CASCADE)
-
+#
+# class WorkTime(models.Model):
+#     start_work = models.TimeField()
+#     end_work = models.TimeField()
+#     doctor = models.ForeignKey(Doctor, related_name='works_time', on_delete=models.CASCADE)
+#
 
 
 class Education(models.Model):
@@ -111,6 +108,34 @@ class Experience(models.Model):
         return f'{self.specialist_experience} - {self.start_exper} - {self.end_exper}'
 
 
+# Модель слота для записи к врачу
+class ConsultationSlot(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='slots')
+    date = models.DateField()  # Дата консультации
+    time = models.TimeField()  # Время консультации
+    is_booked = models.BooleanField(default=False)  # Занят ли слот
+
+    class Meta:
+        unique_together = ('doctor', 'date', 'time')  # Запрещает дублирование слотов
+        verbose_name = 'Consultation Slot'
+        verbose_name_plural = 'Consultation Slots'
+
+    def __str__(self):
+        return f"{self.doctor} - {self.date} {self.time} {'(Занято)' if self.is_booked else '(Свободно)'}"
+
+# Модель бронирования слота пациентом
+class Booking(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='bookings')
+    slot = models.ForeignKey(ConsultationSlot, on_delete=models.CASCADE, related_name='bookings')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('patient', 'slot')  # Запрещает дублирование слотов
+        verbose_name = 'Booking'
+        verbose_name_plural = 'Bookings'
+
+    def __str__(self):
+        return f"Бронирование {self.patient} на {self.slot}"
 
 
 

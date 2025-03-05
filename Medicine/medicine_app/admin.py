@@ -20,5 +20,3 @@ class AdminMP(admin.ModelAdmin):
 
 
 admin.site.register(MainPage, AdminMP)
-admin.site.register(ConsultZapis)
-
