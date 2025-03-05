@@ -6,6 +6,7 @@ coreapi==2.3.3
 coreschema==0.0.4
 Django==5.1.6
 django-cors-headers==4.7.0
+django-filter==25.1
 django-multiselectfield==0.1.13
 django-phonenumber-field==8.0.0
 django-rest-swagger==2.2.0
