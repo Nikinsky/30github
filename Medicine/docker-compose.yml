@@ -1,3 +1,4 @@
+
 version: '3'
 
 services:
@@ -9,10 +10,11 @@ services:
       ./manage.py collectstatic --noinput &&
       ./manage.py makemigrations &&
       ./manage.py migrate &&
-      gunicorn -b 0.0.0.0:8000 kino_site.wsgi:application"
+      python manage.py shell -c \"import os; from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'admin')\" &&
+      gunicorn -b 0.0.0.0:8000 Medicine.wsgi:application"
     volumes:
       - .:/app
-      - static_volume:/app/static
+      - /home/ubuntu/30github/Medicine/staticfiles:/app/static
       - media_volume:/app/media
     ports:
       - "8000:8000"
@@ -35,12 +37,11 @@ services:
     ports:
       - "80:80"
     volumes:
-      - static_volume:/app/static
+      - /home/ubuntu/30github/Medicine/staticfiles:/app/static
       - media_volume:/app/media
     depends_on:
       - web
 
 volumes:
   postgres_data:
-  static_volume:
   media_volume:
