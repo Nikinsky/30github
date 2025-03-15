@@ -20,7 +20,7 @@ class ExperienceInline(admin.TabularInline):
 class DocktorAdmin(admin.ModelAdmin):
     inlines = [EducationInline,ExperienceInline]
 
-
+admin.site.register(UserProfile)
 admin.site.register(Doctor, DocktorAdmin)
 admin.site.register(Patient)
 admin.site.register(Feedback)

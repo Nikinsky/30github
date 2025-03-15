@@ -27,6 +27,15 @@ class RegisterPatientSerializer(serializers.ModelSerializer):
         user = Patient.objects.create_user(**validated_data)
         return user
 
+class RegisterDoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Doctor
+        fields = ['id', 'username', 'email', 'password', 'special', 'status_edu', 'status_cat', 'phone_number']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = Doctor.objects.create_user(**validated_data)
+        return user
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

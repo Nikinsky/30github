@@ -31,9 +31,10 @@ class Patient(UserProfile):
 class Doctor(UserProfile):
     fio = models.CharField(max_length=200)
     image = models.ImageField(upload_to='doctor_img', null=True, blank=True)
+    phone_number = PhoneNumberField(null=True, blank=True, region="KG")
     special = models.ForeignKey(SpecialDoctor, related_name='special_doctor', on_delete=models.CASCADE)
     about_me = models.TextField(null=True, blank=True)
-    experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)])
+    experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)], null=True, blank=True)
     amount_of_consultation = models.CharField(max_length=100)
     work_start_time = models.TimeField(default='09:00')  # Начало рабочего дня
     work_end_time = models.TimeField(default='17:00')    # Конец рабочего дня
@@ -42,14 +43,14 @@ class Doctor(UserProfile):
         ('Кандидат мединциских наук', 'Кандидат мединциских наук'),
         ('Доктор мединциских наук', 'Доктор мединциских наук')
     }
-    status_edu = models.CharField(max_length=255, choices=EDU_CHOICES)
+    status_edu = models.CharField(max_length=255, choices=EDU_CHOICES, null=True, blank=True)
 
     CAT_CHOICES = {
         ('Для взрослого', 'Для взрослого'),
         ('Для ребёнка', 'Для ребёнка'),
         ('Для взрослого и ребёнка', 'Для взрослого и ребёнка'),
     }
-    status_cat = models.CharField(max_length=255, choices=CAT_CHOICES)
+    status_cat = models.CharField(max_length=255, choices=CAT_CHOICES, null=True, blank=True)
 
     DAYS_OF_WEEK = [
         ('Mon', 'Понедельник'),

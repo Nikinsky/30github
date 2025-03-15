@@ -40,6 +40,30 @@ class RegisterView(generics.GenericAPIView):
             status=status.HTTP_201_CREATED,
         )
 
+class RegisterDoctorView(generics.GenericAPIView):
+    """Регистрация нового пользователя с выдачей токенов"""
+    serializer_class = RegisterDoctorSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        # Генерация токенов
+        refresh = RefreshToken.for_user(user)
+        tokens = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
+
+        return Response(
+            {
+                "message": "User registered successfully.",
+                "tokens": tokens,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 class LoginView(generics.GenericAPIView):
     """Авторизация пользователя по email с выдачей токенов"""
@@ -47,17 +71,17 @@ class LoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        username = request.data.get('username')
+        email = request.data.get('email')
         password = request.data.get('password')
 
-        if not username or not password:
+        if not email or not password:
             return Response(
                 {"error": "Email and password are required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         try:
-            user = UserProfile.objects.get(email=username)
+            user = UserProfile.objects.get(email=email)
         except UserProfile.DoesNotExist:
             return Response(
                 {"error": "Invalid email or password."},

@@ -15,7 +15,9 @@ urlpatterns = [
     path('bookings/', BookingListView.as_view(), name='all-bookings'),
     path('bookings/create/', BookingCreateView.as_view(), name='create-booking'),
 
-    path('register/', RegisterView.as_view(), name='register'),
+    path('register_patient/', RegisterView.as_view(), name='register-patient'),
+    path('register_doctor/', RegisterDoctorView.as_view(), name='register-doctor'),
+
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
 
