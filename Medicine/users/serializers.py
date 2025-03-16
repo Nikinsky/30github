@@ -141,7 +141,7 @@ class DoctorDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctor
-        fields = ['id', 'fio', 'medicine_special', 'about_me', 'price_consultation', 'dlitelnost', 'educations','average_rating', 'experiences', 'experience', 'whatsapp_link', 'telegram_link'] #rating and count consultation need add
+        fields = ['id', 'fio', 'medicine_special', 'about_me', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'experience', 'whatsapp_link', 'telegram_link'] #rating and count consultation need add
 
 
     # def get_average_rating(self, obj):
