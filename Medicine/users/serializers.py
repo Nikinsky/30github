@@ -30,7 +30,7 @@ class RegisterPatientSerializer(serializers.ModelSerializer):
 class RegisterDoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ['id', 'username', 'email', 'password', 'special', 'status_edu', 'status_cat', 'phone_number']
+        fields = ['id', 'username', 'email', 'password', 'medicine_special', 'status_edu', 'status_cat', 'phone_number']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -112,20 +112,20 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
     # works_time = WorkTimeSerializer(many=True, read_only=True)
     class Meta:
         model  = Doctor
-        fields = ['id', 'fio', 'special',  'about_me', 'experience', 'work_start_time', 'work_end_time', 'amount_of_consultation', 'status_edu', 'days_of_week', 'price_consultation', 'dlitelnost', 'educations', 'experiences',]
+        fields = ['id', 'fio', 'medicine_special',  'about_me', 'experience', 'work_start_time', 'work_end_time', 'amount_of_consultation', 'status_edu', 'days_of_week', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'telegram_link', 'whatsapp_link']
 
 
 
 class DoctorListSerializer(serializers.ModelSerializer):
-    average_rating = serializers.SerializerMethodField()
+    # average_rating = serializers.SerializerMethodField()
     # works_time = WorkTimeSerializer(many=True)
 
     class Meta:
         model = Doctor
-        fields = ['id', 'fio', 'special', 'experience', 'work_start_time', 'average_rating', 'price_consultation', 'image']
+        fields = ['id', 'fio', 'medicine_special', 'experience', 'work_start_time', 'price_consultation', 'image']
 
-    def get_average_rating(self, obj):
-        return obj.get_average_rating()
+    # def get_average_rating(self, obj):
+    #     return obj.get_average_rating()
 
 
 
@@ -135,17 +135,17 @@ class DoctorListSerializer(serializers.ModelSerializer):
 class DoctorDetailSerializer(serializers.ModelSerializer):
     educations = EducationSerializer(many=True, read_only=True)
     experiences = ExperienceSerializer(many=True, read_only=True)
-    average_rating = serializers.SerializerMethodField()
+    # average_rating = serializers.SerializerMethodField()
     # ratings = FeedbackDoctorSerializer(many=True, read_only=True)
-    ratings = FeedbackListCreateSerializer(many=True)
+    # ratings = FeedbackListCreateSerializer(many=True)
 
     class Meta:
         model = Doctor
-        fields = ['id', 'fio', 'special', 'about_me', 'price_consultation', 'dlitelnost', 'educations','average_rating', 'experiences', 'experience','ratings'] #rating and count consultation need add
+        fields = ['id', 'fio', 'medicine_special', 'about_me', 'price_consultation', 'dlitelnost', 'educations','average_rating', 'experiences', 'experience', 'whatsapp_link', 'telegram_link'] #rating and count consultation need add
 
 
-    def get_average_rating(self, obj):
-        return obj.get_average_rating()
+    # def get_average_rating(self, obj):
+    #     return obj.get_average_rating()
 
 
 

@@ -5,7 +5,7 @@ class DoctorFilter(FilterSet):
     class Meta:
         model = Doctor
         fields = {
-            'special':['exact'],
+            'medicine_special':['exact'],
             'status_cat': ['exact'],
             'status_edu': ['exact'],
 

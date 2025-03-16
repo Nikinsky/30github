@@ -4,14 +4,39 @@ from multiselectfield import MultiSelectField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 
-
-class SpecialDoctor(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f'{self.name}'
-
-
+MEDICAL_SPECIALTIES = [
+    ('therapist', 'Терапевт'),
+    ('family_doctor', 'Семейный врач'),
+    ('pediatrician', 'Педиатр'),
+    ('surgeon', 'Хирург'),
+    ('traumatologist', 'Травматолог-ортопед'),
+    ('neurologist', 'Невролог'),
+    ('cardiologist', 'Кардиолог'),
+    ('pulmonologist', 'Пульмонолог'),
+    ('gastroenterologist', 'Гастроэнтеролог'),
+    ('endocrinologist', 'Эндокринолог'),
+    ('nephrologist', 'Нефролог'),
+    ('hematologist', 'Гематолог'),
+    ('rheumatologist', 'Ревматолог'),
+    ('infectiologist', 'Инфекционист'),
+    ('allergist', 'Аллерголог-иммунолог'),
+    ('gynecologist', 'Гинеколог'),
+    ('obstetrician', 'Акушер'),
+    ('urologist', 'Уролог'),
+    ('andrologist', 'Андролог'),
+    ('radiologist', 'Рентгенолог'),
+    ('ultrasound_diagnostician', 'УЗИ-диагност'),
+    ('psychiatrist', 'Психиатр'),
+    ('psychotherapist', 'Психотерапевт'),
+    ('clinical_psychologist', 'Клинический психолог'),
+    ('ophthalmologist', 'Офтальмолог'),
+    ('otolaryngologist', 'Оториноларинголог (ЛОР)'),
+    ('dermatologist', 'Дерматолог'),
+    ('dentist', 'Стоматолог'),
+    ('neonatologist', 'Неонатолог'),
+    ('physiotherapist', 'Физиотерапевт'),
+    ('speech_therapist', 'Логопед'),
+]
 
 class UserProfile(AbstractUser):
     pass
@@ -32,18 +57,21 @@ class Doctor(UserProfile):
     fio = models.CharField(max_length=200)
     image = models.ImageField(upload_to='doctor_img', null=True, blank=True)
     phone_number = PhoneNumberField(null=True, blank=True, region="KG")
-    special = models.ForeignKey(SpecialDoctor, related_name='special_doctor', on_delete=models.CASCADE)
     about_me = models.TextField(null=True, blank=True)
     experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)], null=True, blank=True)
     amount_of_consultation = models.CharField(max_length=100)
     work_start_time = models.TimeField(default='09:00')  # Начало рабочего дня
     work_end_time = models.TimeField(default='17:00')    # Конец рабочего дня
+    telegram_link = models.URLField(null=True, blank=True)
+    whatsapp_link = models.URLField(null=True, blank=True)
     EDU_CHOICES = {
         ('Высшее образование', 'Высшее образование'),
         ('Кандидат мединциских наук', 'Кандидат мединциских наук'),
         ('Доктор мединциских наук', 'Доктор мединциских наук')
     }
     status_edu = models.CharField(max_length=255, choices=EDU_CHOICES, null=True, blank=True)
+    medicine_special = models.CharField(max_length=255, choices=MEDICAL_SPECIALTIES, null=True, blank=True)
+
 
     CAT_CHOICES = {
         ('Для взрослого', 'Для взрослого'),
