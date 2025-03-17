@@ -3,6 +3,10 @@ from .views import *
 
 
 urlpatterns = [
+
+    path('patient_mainpage/', PatientMainPageView.as_view(), name='patient_mp'),
+    path('doctor_mainpage/', DoctorMainPageView.as_view(), name='doctor_mp'),
+
     path('doctor_profile/', DoctorUserProfileListView.as_view(), name='doctor_profile'),
     path('doctor_profile_update/', DoctorProfileUpdateListView.as_view(), name='doctor_profile-update'),
     path('doctor_list/', DoctorListView.as_view(), name='doctor-list'),

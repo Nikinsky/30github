@@ -104,15 +104,21 @@ class FeedbackListCreateSerializer(serializers.ModelSerializer):
 
 
 
-
-
 class DoctorProfileSerializer(serializers.ModelSerializer):
     educations = EducationSerializer(many=True)
     experiences = ExperienceSerializer(many=True)
     # works_time = WorkTimeSerializer(many=True, read_only=True)
     class Meta:
         model  = Doctor
-        fields = ['id', 'fio', 'medicine_special',  'about_me', 'experience', 'work_start_time', 'work_end_time', 'amount_of_consultation', 'status_edu', 'days_of_week', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'telegram_link', 'whatsapp_link']
+        fields = ['id', 'fio', 'medicine_special',  'image', 'about_me', 'experience', 'work_start_time', 'work_end_time', 'amount_of_consultation', 'status_edu', 'days_of_week', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'telegram_link', 'whatsapp_link']
+
+
+
+class DoctorProfileMainPageSerializer(serializers.ModelSerializer):
+    # works_time = WorkTimeSerializer(many=True, read_only=True)
+    class Meta:
+        model  = Doctor
+        fields = ['id', 'fio', 'image']
 
 
 
@@ -141,7 +147,7 @@ class DoctorDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Doctor
-        fields = ['id', 'fio', 'medicine_special', 'about_me', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'experience', 'whatsapp_link', 'telegram_link'] #rating and count consultation need add
+        fields = ['id', 'fio', 'medicine_special', 'image', 'about_me', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'experience', 'whatsapp_link', 'telegram_link'] #rating and count consultation need add
 
 
     # def get_average_rating(self, obj):
