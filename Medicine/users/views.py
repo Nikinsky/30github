@@ -157,31 +157,31 @@ class PatientMainPageView(generics.ListAPIView):
     serializer_class = PatientSerializer
 
     def get_queryset(self):
-        return Patient.objects.filter(id==self.request.user.id)
+        return Patient.objects.filter(id=self.request.user.id)
 
 
 
 class DoctorMainPageView(generics.ListAPIView):
-    queryset = Patient.objects.all()
+    queryset = Doctor.objects.all()
     serializer_class = DoctorProfileMainPageSerializer
 
     def get_queryset(self):
-        return Doctor.objects.filter(id==self.request.user.id)
+        return Doctor.objects.filter(id=self.request.user.id)
 
 
 class DoctorUserProfileListView(generics.ListAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorProfileSerializer
 
-    # def get_queryset(self):
-    #     return Doctor.objects.filter(id==self.request.user.id)
+    def get_queryset(self):
+        return Doctor.objects.filter(id=self.request.user.id)
 
 class DoctorProfileUpdateListView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorProfileSerializer
 
     def get_queryset(self):
-        return Doctor.objects.filter(id==self.request.user.id)
+        return Doctor.objects.filter(id=self.request.user.id)
 
 
 
