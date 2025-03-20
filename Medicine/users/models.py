@@ -98,7 +98,7 @@ class Doctor(UserProfile):
 
 
     def __str__(self):
-        return f'{self.fio} - {self.special}'
+        return f'{self.username} - {self.fio} - {self.medicine_special}'
 
     def get_average_rating(self):
         rating = self.ratings.all()
