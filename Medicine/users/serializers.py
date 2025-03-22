@@ -20,7 +20,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class RegisterPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['id', 'username', 'email', 'password', 'phone_number']
+        fields = ['id', 'username', 'fio', 'email', 'password', 'phone_number', 'image']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -30,7 +30,7 @@ class RegisterPatientSerializer(serializers.ModelSerializer):
 class RegisterDoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = ['id', 'username', 'email', 'password', 'medicine_special', 'status_edu', 'status_cat', 'phone_number']
+        fields = ['id', 'username', 'fio', 'email', 'password', 'medicine_special', 'status_edu', 'status_cat', 'phone_number', 'image']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
