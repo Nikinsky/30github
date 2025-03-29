@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'drf_spectacular',
     "corsheaders",
     'django_filters',
-
 ]
 
 MIDDLEWARE = [
@@ -71,7 +70,6 @@ ROOT_URLCONF = 'Medicine.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
