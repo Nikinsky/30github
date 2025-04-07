@@ -12,7 +12,7 @@ urlpatterns = [
     path('doctor_list/', DoctorListView.as_view(), name='doctor-list'),
     path('doctor_detail/<int:pk>/', DoctorDetailListView.as_view(), name='doctor-detail'),
 
-    path('generate-slots/', GenerateSlotsView.as_view(), name='generate-slots'),
+    # path('generate-slots/', GenerateSlotsView.as_view(), name='generate-slots'),
 
     path('slots/', ConsultationSlotListView.as_view(), name='all-slots'),
     path('slots/available/', AvailableConsultationSlotListView.as_view(), name='available-slots'),

@@ -80,16 +80,16 @@ class Doctor(UserProfile):
     }
     status_cat = models.CharField(max_length=255, choices=CAT_CHOICES, null=True, blank=True)
 
-    DAYS_OF_WEEK = [
-        ('Mon', 'Понедельник'),
-        ('Tue', 'Вторник'),
-        ('Wed', 'Среда'),
-        ('Thu', 'Четверг'),
-        ('Fri', 'Пятница'),
-        ('Sat', 'Суббота'),
-        ('Sun', 'Воскресенье'),
-    ]
-    days_of_week = MultiSelectField(choices=DAYS_OF_WEEK, max_choices=7, max_length=100)  # Allow selecting 3 days
+    # DAYS_OF_WEEK = [
+    #     ('Mon', 'Понедельник'),
+    #     ('Tue', 'Вторник'),
+    #     ('Wed', 'Среда'),
+    #     ('Thu', 'Четверг'),
+    #     ('Fri', 'Пятница'),
+    #     ('Sat', 'Суббота'),
+    #     ('Sun', 'Воскресенье'),
+    # ]
+    # days_of_week = MultiSelectField(choices=DAYS_OF_WEEK, max_choices=7, max_length=100)  # Allow selecting 3 days
     price_consultation = models.PositiveSmallIntegerField(default=1000, null=True, blank=True)
     dlitelnost = models.CharField(max_length=100, default='60 мин.', help_text="Длительность")
 

@@ -110,7 +110,7 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
     # works_time = WorkTimeSerializer(many=True, read_only=True)
     class Meta:
         model  = Doctor
-        fields = ['id', 'fio', 'medicine_special',  'image', 'about_me', 'experience', 'work_start_time', 'work_end_time', 'amount_of_consultation', 'status_edu', 'days_of_week', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'telegram_link', 'whatsapp_link']
+        fields = ['id', 'fio', 'medicine_special',  'image', 'about_me', 'experience', 'work_end_time', 'amount_of_consultation', 'status_edu', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'telegram_link', 'whatsapp_link']
 
 
 
@@ -181,12 +181,5 @@ class BookingSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-
-
-
-class GenerateSlotsSerializer(serializers.Serializer):
-    doctor_id = serializers.PrimaryKeyRelatedField(queryset=Doctor.objects.all())
-    days_ahead = serializers.IntegerField(default=14, min_value=1)
-    slot_duration = serializers.IntegerField(default=30, min_value=10)
 
 
