@@ -10,7 +10,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .filters import *
 from rest_framework.response import Response
-from .services import generate_consultation_slots
+#from .services import generate_consultation_slots
+#from .serializers import GenerateSlotsSerializer
 
 
 
@@ -108,7 +109,6 @@ class LoginView(generics.GenericAPIView):
             status=status.HTTP_200_OK,
         )
 
-
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -193,16 +193,9 @@ class DoctorListView(generics.ListAPIView):
     filterset_class = DoctorFilter
 
 
-
-
-
 class DoctorDetailListView(generics.RetrieveAPIView):
     queryset = Doctor.objects.all()
     serializer_class = DoctorDetailSerializer
-
-
-
-
 
 
 # Список всех слотов (свободных и занятых)
@@ -220,6 +213,7 @@ class AvailableConsultationSlotListView(generics.ListAPIView):
             return ConsultationSlot.objects.filter(doctor_id=doctor_id, is_booked=False)
         return ConsultationSlot.objects.filter(is_booked=False)
 
+
 # Создание нового бронирования
 class BookingCreateView(generics.CreateAPIView):
     queryset = Booking.objects.all()
@@ -229,7 +223,6 @@ class BookingCreateView(generics.CreateAPIView):
 class BookingListView(generics.ListAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
-
 
 
 
@@ -243,46 +236,45 @@ class FeedbackListViewAPI(generics.ListAPIView):
     serializer_class = FeedbackListCreateSerializer
 
 
+    from datetime import datetime, timedelta
+    from rest_framework import generics, status
+    from rest_framework.response import Response
+    from .models import Doctor, ConsultationSlot
 
-from datetime import datetime, timedelta
-from rest_framework import generics, status
-from rest_framework.response import Response
-from .models import Doctor, ConsultationSlot
-
-#
-# class GenerateSlotsView(generics.GenericAPIView):
-#     serializer_class = GenerateSlotsSerializer
-#
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         if serializer.is_valid():
-#             doctor = serializer.validated_data['doctor_id']
-#             days_ahead = serializer.validated_data['days_ahead']
-#             slot_duration = serializer.validated_data['slot_duration']
-#
-#             # Логика генерации слотов внутри вью
-#             today = datetime.now().date()
-#             slots_to_create = []
-#
-#             for day in range(days_ahead):
-#                 consultation_date = today + timedelta(days=day)
-#                 start_time = doctor.work_start_time
-#                 end_time = doctor.work_end_time
-#
-#                 current_time = datetime.combine(consultation_date, start_time)
-#                 end_of_day = datetime.combine(consultation_date, end_time)
-#
-#                 while current_time.time() < end_of_day.time():
-#                     if not ConsultationSlot.objects.filter(doctor=doctor, date=consultation_date, time=current_time.time()).exists():
-#                         slots_to_create.append(
-#                             ConsultationSlot(doctor=doctor, date=consultation_date, time=current_time.time())
-#                         )
-#
-#                     current_time += timedelta(minutes=slot_duration)
-#
-#             if slots_to_create:
-#                 ConsultationSlot.objects.bulk_create(slots_to_create)
-#
-#             return Response({'message': 'Слоты успешно созданы!'}, status=status.HTTP_201_CREATED)
-#
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #
+    # class GenerateSlotsView(generics.GenericAPIView):
+    #     serializer_class = GenerateSlotsSerializer
+    #
+    #     def post(self, request, *args, **kwargs):
+    #         serializer = self.get_serializer(data=request.data)
+    #         if serializer.is_valid():
+    #             doctor = serializer.validated_data['doctor_id']
+    #             days_ahead = serializer.validated_data['days_ahead']
+    #             slot_duration = serializer.validated_data['slot_duration']
+    #
+    #             # Логика генерации слотов внутри вью
+    #             today = datetime.now().date()
+    #             slots_to_create = []
+    #
+    #             for day in range(days_ahead):
+    #                 consultation_date = today + timedelta(days=day)
+    #                 start_time = doctor.work_start_time
+    #                 end_time = doctor.work_end_time
+    #
+    #                 current_time = datetime.combine(consultation_date, start_time)
+    #                 end_of_day = datetime.combine(consultation_date, end_time)
+    #
+    #                 while current_time.time() < end_of_day.time():
+    #                     if not ConsultationSlot.objects.filter(doctor=doctor, date=consultation_date, time=current_time.time()).exists():
+    #                         slots_to_create.append(
+    #                             ConsultationSlot(doctor=doctor, date=consultation_date, time=current_time.time())
+    #                         )
+    #
+    #                     current_time += timedelta(minutes=slot_duration)
+    #
+    #             if slots_to_create:
+    #                 ConsultationSlot.objects.bulk_create(slots_to_create)
+    #
+    #             return Response({'message': 'Слоты успешно созданы!'}, status=status.HTTP_201_CREATED)
+    #
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

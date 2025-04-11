@@ -59,9 +59,9 @@ class Doctor(UserProfile):
     phone_number = PhoneNumberField(null=True, blank=True, region="KG")
     about_me = models.TextField(null=True, blank=True)
     experience = models.PositiveSmallIntegerField([MinValueValidator(1), MaxValueValidator(70)], null=True, blank=True)
-    amount_of_consultation = models.CharField(max_length=100)
-    work_start_time = models.TimeField(default='09:00')  # Начало рабочего дня
-    work_end_time = models.TimeField(default='17:00')    # Конец рабочего дня
+    amount_of_consultation = models.CharField(max_length=100,null=True, blank=True)
+    work_start_time = models.TimeField(default='09:00',null=True, blank=True)  # Начало рабочего дня
+    work_end_time = models.TimeField(default='17:00',null=True, blank=True)    # Конец рабочего дня
     telegram_link = models.URLField(null=True, blank=True)
     whatsapp_link = models.URLField(null=True, blank=True)
     EDU_CHOICES = {
@@ -116,22 +116,22 @@ class Doctor(UserProfile):
 
 
 class Education(models.Model):
-    specialist_educations = models.ForeignKey(Doctor, related_name='educations', on_delete=models.CASCADE)
+    specialist_educations = models.ForeignKey(Doctor, related_name='educations', on_delete=models.CASCADE, null=True,blank=True)
     # during_education = DateRangeField()
-    start_edu = models.DateField()
-    end_edu = models.DateField()
-    description_study = models.TextField()
+    start_edu = models.DateField(null=True,blank=True)
+    end_edu = models.DateField(null=True,blank=True)
+    description_study = models.TextField(null=True,blank=True)
 
     def __str__(self):
         return f'{self.specialist_educations} - {self.start_edu} - {self.end_edu}'
 
 
 class Experience(models.Model):
-    specialist_experience = models.ForeignKey(Doctor, related_name='experiences', on_delete=models.CASCADE)
+    specialist_experience = models.ForeignKey(Doctor, related_name='experiences', on_delete=models.CASCADE,null=True,blank=True)
     # during_education = DateRangeField()
-    start_exper = models.DateField()
-    end_exper = models.DateField()
-    description_exper = models.TextField()
+    start_exper = models.DateField(null=True,blank=True)
+    end_exper = models.DateField(null=True,blank=True)
+    description_exper = models.TextField(null=True,blank=True)
 
     def __str__(self):
         return f'{self.specialist_experience} - {self.start_exper} - {self.end_exper}'

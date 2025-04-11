@@ -20,7 +20,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class RegisterPatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ['id', 'username', 'fio', 'email', 'password', 'phone_number', 'image']
+        fields = ['id', 'username', 'fio',  'email', 'password', 'phone_number', 'image']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -63,18 +63,6 @@ class ExperienceSerializer(serializers.ModelSerializer):
         fields = ['id', 'start_exper', 'end_exper', 'description_exper']
 
 
-
-# class WorkTimeSerializer(serializers.ModelSerializer):
-#     start_work = serializers.TimeField(format('%H:%M'))
-#     end_work = serializers.TimeField(format('%H:%M'))
-#
-#     class Meta:
-#         model = WorkTime
-#         fields = ['start_work', 'end_work']
-
-
-
-
 class FeedbackListSerializer(serializers.ModelSerializer):
     user = PatientSerializer
     class Meta:
@@ -105,12 +93,12 @@ class FeedbackListCreateSerializer(serializers.ModelSerializer):
 
 
 class DoctorProfileSerializer(serializers.ModelSerializer):
-    educations = EducationSerializer(many=True)
-    experiences = ExperienceSerializer(many=True)
+    educations = EducationSerializer(many=True, read_only=True)
+    experiences = ExperienceSerializer(many=True, read_only=True)
     # works_time = WorkTimeSerializer(many=True, read_only=True)
     class Meta:
         model  = Doctor
-        fields = ['id', 'fio', 'medicine_special',  'image', 'about_me', 'experience', 'work_end_time', 'amount_of_consultation', 'status_edu', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'telegram_link', 'whatsapp_link']
+        fields = ['id', 'fio', 'medicine_special',  'image', 'about_me', 'experience', 'work_start_time', 'work_end_time', 'amount_of_consultation', 'status_edu', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'telegram_link', 'whatsapp_link']
 
 
 
@@ -130,24 +118,22 @@ class DoctorListSerializer(serializers.ModelSerializer):
         model = Doctor
         fields = ['id', 'fio', 'medicine_special', 'experience', 'work_start_time', 'price_consultation', 'image']
 
-    # def get_average_rating(self, obj):
-    #     return obj.get_average_rating()
-
 
 
 
 
 
 class DoctorDetailSerializer(serializers.ModelSerializer):
-    educations = EducationSerializer(many=True, read_only=True)
-    experiences = ExperienceSerializer(many=True, read_only=True)
+    educations = EducationSerializer()
+    experiences = ExperienceSerializer()
+    ratings =  FeedbackListCreateSerializer(many=True, read_only=True)
     # average_rating = serializers.SerializerMethodField()
     # ratings = FeedbackDoctorSerializer(many=True, read_only=True)
     # ratings = FeedbackListCreateSerializer(many=True)
 
     class Meta:
         model = Doctor
-        fields = ['id', 'fio', 'medicine_special', 'image', 'about_me', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'experience', 'whatsapp_link', 'telegram_link'] #rating and count consultation need add
+        fields = ['id', 'fio', 'medicine_special', 'image', 'about_me', 'price_consultation', 'dlitelnost', 'educations', 'experiences', 'experience', 'whatsapp_link', 'telegram_link','ratings'] #rating and count consultation need add
 
 
     # def get_average_rating(self, obj):
@@ -179,7 +165,5 @@ class BookingSerializer(serializers.ModelSerializer):
         slot.is_booked = True
         slot.save()
         return super().create(validated_data)
-
-
 
 
