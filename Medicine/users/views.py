@@ -121,22 +121,21 @@ class LogoutSerializer(serializers.Serializer):
 
 
 class LogoutView(generics.GenericAPIView):
-    """Логаут пользователя"""
     serializer_class = LogoutSerializer
 
+    # Рекомендуется включить проверку аутентификации
     # permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         try:
-            # Валидируем входные данные через сериализатор
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
 
             refresh_token = serializer.validated_data['refresh']
             token = RefreshToken(refresh_token)
+
+            # Добавляем токен в черный список
             token.blacklist()
-
-
 
             return Response(
                 {"message": "Logout successful."},
@@ -144,10 +143,9 @@ class LogoutView(generics.GenericAPIView):
             )
         except Exception as e:
             return Response(
-                {"error": "Invalid or expired token."},
+                {"error": f"Invalid or expired token. Details: {str(e)}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
 
 
 

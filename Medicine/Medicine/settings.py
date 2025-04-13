@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'medicine_app',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'multiselectfield',
     "phonenumber_field",
     'rest_framework_swagger',
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     "corsheaders",
     'django_filters',
+
 ]
 
 MIDDLEWARE = [
@@ -168,12 +170,11 @@ SPECTACULAR_SETTINGS = {
 
 from datetime import timedelta
 
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10000),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
+    "ROTATE_REFRESH_TOKENS": True,  # Включить ротацию refresh-токенов
+    "BLACKLIST_AFTER_ROTATION": True,  # Добавлять старые токены в черный список
     "UPDATE_LAST_LOGIN": False,
 }
 
